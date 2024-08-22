@@ -1,0 +1,25 @@
+{
+  "properties": {
+    "storeId": {
+      "type": "long"
+    },
+    "customerId": {
+      "type": "long"
+    },
+    "storeName": {
+      "type": "text",
+      "analyzer": "korean_mixed_analyzer"
+    },
+    "storeIntroduction": {
+      "type": "text",
+      "analyzer": "korean_mixed_analyzer"
+    },
+    "menuName": {
+      "type": "text",
+      "analyzer": "korean_mixed_analyzer"
+    },
+    "menuIntroduction": {
+      "type": "text",
+      "analyzer": "korean_mixed_analyzer"
+    }
+  }}

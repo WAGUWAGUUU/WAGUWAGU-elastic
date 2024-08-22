@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: elastic-application
+  elasticsearch:
+    rest:
+      uris: http://elastic:9200
+
+logging:
+  level:
+    root: info
