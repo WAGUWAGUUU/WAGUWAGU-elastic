@@ -2,6 +2,7 @@ package com.example.elastic.service;
 
 import com.example.elastic.domain.entity.ElasticStores;
 import com.example.elastic.domain.request.ElasticInformation;
+import com.example.elastic.domain.response.ElasticStoreSearchResult;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -14,6 +15,8 @@ public interface ElasticStoresService {
     Page<ElasticStores> findByStoreName(Pageable pageable,String storeName);
 
     Page<ElasticStores> findByMenuName(Pageable pageable,String menuName);
+
+    Page<ElasticStoreSearchResult> findMenuByRelevance(Pageable pageable, String menuName);
 
     void deleteByCustomerId(Long customerId);
 

@@ -1,17 +1,17 @@
 package com.example.elastic.domain.config;
 
+import com.example.elastic.domain.entity.ElasticStores;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.elasticsearch.client.ClientConfiguration;
-import org.springframework.data.elasticsearch.client.elc.ReactiveElasticsearchConfiguration;
+import org.springframework.data.elasticsearch.client.elc.ElasticsearchConfiguration;
 import org.springframework.data.elasticsearch.config.EnableElasticsearchAuditing;
 import org.springframework.data.elasticsearch.core.convert.ElasticsearchCustomConversions;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.convert.ReadingConverter;
 import org.springframework.data.convert.WritingConverter;
-import com.example.elastic.domain.entity.ElasticStores;
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
 
 import java.util.Arrays;
@@ -22,15 +22,15 @@ import java.util.Map;
 @EnableElasticsearchRepositories
 @EnableElasticsearchAuditing
 @Configuration
-public class ElasticConfig extends ReactiveElasticsearchConfiguration {
+public class ElasticConfig extends ElasticsearchConfiguration {
 
-    @Value("${spring.elasticsearch.rest.uris}")
+    @Value("${spring.elasticsearch.uris:${spring.elasticsearch.rest.uris:http://localhost:9200}}")
     private String elasticsearchUris;
 
     @Override
     public ClientConfiguration clientConfiguration() {
         return ClientConfiguration.builder()
-                .connectedTo(elasticsearchUris.replace("http://", ""))
+                .connectedTo(parseElasticsearchHosts())
                 .build();
     }
 
@@ -39,6 +39,14 @@ public class ElasticConfig extends ReactiveElasticsearchConfiguration {
     public ElasticsearchCustomConversions elasticsearchCustomConversions() {
         return new ElasticsearchCustomConversions(
                 Arrays.asList(new ElasticStoresToMap(), new MapToElasticStores()));
+    }
+
+    private String[] parseElasticsearchHosts() {
+        return Arrays.stream(elasticsearchUris.split(","))
+                .map(String::trim)
+                .filter(uri -> !uri.isEmpty())
+                .map(uri -> uri.replaceFirst("^https?://", ""))
+                .toArray(String[]::new);
     }
 
     @WritingConverter
